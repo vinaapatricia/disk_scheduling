@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>First Come First Service -DISK SCHEDULING</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+    }
+
+    h1 {
+      text-align: center;
+    }
+
+    .form-container {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    label {
+      font-weight: bold;
+    }
+
+    input[type="text"] {
+      padding: 5px;
+      width: 300px;
+    }
+
+    button {
+      padding: 5px 10px;
+      background-color: #a8c26b;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #a8c26b;
+    }
+
+    .chart-container {
+      width: 600px;
+      margin: 0 auto;
+    }
+  </style>
+</head>
+<body>
+  <h1>Disk Scheduling - FCFS</h1>
+  <div class="form-container">
+    <label for="requests">Input Value :</label>
+    <br />
+    <input type="text" id="requests" />
+    <br />
+    <button onclick="visualize()">visualize</button>
+  </div>
+  <div class="chart-container">
+    <canvas id="chart"></canvas>
+  </div>
+
+  <script>
+    function schedule() {
+      var input = document.getElementById('requests').value;
+      var requests = input.split(' ').map(Number);
+
+      var seekTime = 0;
+      var seekSequence = [];
+      var currentPosition = 0;
+
+      for (var i = 0; i < requests.length; i++) {
+        seekSequence.push(currentPosition);
+        seekTime += Math.abs(requests[i] - currentPosition);
+        currentPosition = requests[i];
+      }
+
+      var ctx = document.getElementById('chart').getContext('2d');
+      var chart = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: seekSequence,
+          datasets: [{
+            label: 'Seek Time',
+            data: seekSequence.map((_, index) => seekTime / (index + 1)),
+            fill: false,
+            borderColor: 'blue'
+          }]
+        },
+        options: {
+          responsive: true,
+          scales: {
+            x: {
+              display: true,
+              title: {
+                display: true,
+                text: 'disk'
+              }
+            },
+            y: {
+              display: true,
+              title: {
+                display: true,
+                text: 'R/W time'
+              },
+              suggestedMin: 0
+            }
+          }
+        }
+      });
+    }
+  </script>
+</body>
+</html>
